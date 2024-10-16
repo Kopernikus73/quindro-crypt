@@ -1,4 +1,4 @@
-const VERSION: &str = "1.0.0";
+const VERSION: &str = "1.0.1";
 const ALPHABET: [(char, i8, i8, i8); 26] = [
     ('a', 1, -25, 27),
     ('b', 2, -24, 28),
@@ -30,8 +30,9 @@ const ALPHABET: [(char, i8, i8, i8); 26] = [
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
+    let string_list = convert_string(&args[3]);
 
-    if args.len() == 1 || args.len() > 4 {
+    if args.len() == 1 {
         println!("Invalid number of arguments");
     }else {
         match args[1].as_str() {
@@ -41,20 +42,49 @@ fn main() {
                 if args.len() != 4 {
                     eprintln!("Invalid number of arguments");
                 } else {
-                    encrypt(&args[2].to_lowercase(), &args[3].to_lowercase());
+                    for i in 0..string_list.len() {
+                        encrypt(&args[2].to_lowercase(), &string_list[i].to_lowercase());
+                    }
+                    println!();
                 }
             },
             "-d" => {
                 if args.len() != 4 {
                     eprintln!("Invalid number of arguments");
                 } else {
-                    decrypt(&args[2].to_lowercase(), &args[3].to_lowercase());
+
+
+                    for i in 0..string_list.len() {
+                        decrypt(&args[2].to_lowercase(), &string_list[i].to_lowercase());
+                    }
+                    println!();
                 }
             },
             _ => eprintln!("Invalid option"),
         }
     }
 
+}
+
+fn convert_string(string: &str) -> Vec<String> {
+    let mut string_to_list = string.to_lowercase().chars().collect::<Vec<char>>();
+    string_to_list.push(' ');
+
+    let mut string_list: Vec<String> = vec!();
+    let mut last_num: usize = 0;
+    let mut string_num = 0;
+    for i in 0..string_to_list.len() {
+        if string_to_list[i] == ' ' {
+            string_list.push(String::new());
+            for j in 0..i-last_num {
+                string_list[string_num] += &string_to_list[last_num+j].to_string();
+
+            }
+            last_num = i + 1;
+            string_num += 1;
+        }
+    }
+    string_list
 }
 
 fn help() {
@@ -139,7 +169,7 @@ fn encrypt(in_key: &str, in_string: &str) -> (){
         }
     }
 
-    println!("{}",out_string)
+    print!("{} ",out_string)
 }
 
 fn decrypt(in_key: &str, in_string: &str) -> () {
@@ -173,5 +203,5 @@ fn decrypt(in_key: &str, in_string: &str) -> () {
         }
     }
 
-    println!("{}",out_string)
+    print!("{} ",out_string)
 }

@@ -13,3 +13,5 @@ Quindro-Crypt is a simple and fast, but not highly secure encrypting method.
 `-e <key> <string>` Encrypts the given string
 
 `-d <key> <string>` Decrypts the given string
+
+**Note:** Use " " operator to use spaces in the string
