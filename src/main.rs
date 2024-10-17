@@ -1,4 +1,4 @@
-const VERSION: &str = "1.0.1";
+const VERSION: &str = "1.0.2";
 const ALPHABET: [(char, i8, i8, i8); 26] = [
     ('a', 1, -25, 27),
     ('b', 2, -24, 28),
@@ -30,7 +30,10 @@ const ALPHABET: [(char, i8, i8, i8); 26] = [
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
-    let string_list = convert_string(&args[3]);
+    let mut string_list: Vec<String> = vec!();
+    if args.len() > 2{
+        string_list = convert_string(&args[3]);
+    }
 
     if args.len() == 1 {
         println!("Invalid number of arguments");
