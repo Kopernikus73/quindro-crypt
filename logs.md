@@ -7,3 +7,6 @@
 
 ## v1.0.1
 - it's now possible to use spaces in the string
+
+## v1.0.2
+- fixed "out of bounds" error
