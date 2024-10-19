@@ -10,3 +10,6 @@
 
 ## v1.0.2
 - fixed "out of bounds" error
+
+## v1.0.3
+- fixed wrong key length problem when using spaces in the string

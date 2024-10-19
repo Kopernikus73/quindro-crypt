@@ -1,4 +1,4 @@
-const VERSION: &str = "1.0.2";
+const VERSION: &str = "1.0.3";
 const ALPHABET: [(char, i8, i8, i8); 26] = [
     ('a', 1, -25, 27),
     ('b', 2, -24, 28),
@@ -31,6 +31,7 @@ const ALPHABET: [(char, i8, i8, i8); 26] = [
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let mut string_list: Vec<String> = vec!();
+    let mut key_start: usize  = 0;
     if args.len() > 2{
         string_list = convert_string(&args[3]);
     }
@@ -46,7 +47,7 @@ fn main() {
                     eprintln!("Invalid number of arguments");
                 } else {
                     for i in 0..string_list.len() {
-                        encrypt(&args[2].to_lowercase(), &string_list[i].to_lowercase());
+                        encrypt(&args[2].to_lowercase(), &string_list[i].to_lowercase(), &mut key_start);
                     }
                     println!();
                 }
@@ -58,7 +59,7 @@ fn main() {
 
 
                     for i in 0..string_list.len() {
-                        decrypt(&args[2].to_lowercase(), &string_list[i].to_lowercase());
+                        decrypt(&args[2].to_lowercase(), &string_list[i].to_lowercase(), &mut key_start);
                     }
                     println!();
                 }
@@ -141,8 +142,9 @@ fn generate_key(in_key: &str) -> (Vec<i8>,String) {
     (num_key," ".to_string())
 }
 
-fn encrypt(in_key: &str, in_string: &str) -> (){
+fn encrypt(in_key: &str, in_string: &str, key_start: &mut usize) -> (){
     let key = generate_key(in_key);
+    let key_start_copy = key_start.to_owned();
     if key.1.len() > 5 {
         eprintln!("{:?}",key.1);
     }
@@ -160,7 +162,8 @@ fn encrypt(in_key: &str, in_string: &str) -> (){
 
     let mut out_num_string:Vec<i8> = vec!();
     for i in 0..num_string.len() {
-        out_num_string.push(num_string[i] - key.0[i % 5]);
+        out_num_string.push(num_string[i] - key.0[(i + key_start_copy)% 5]);
+        *key_start = (i + key_start_copy + 1)% 5;
     }
 
     let mut out_string = String::new();
@@ -175,8 +178,9 @@ fn encrypt(in_key: &str, in_string: &str) -> (){
     print!("{} ",out_string)
 }
 
-fn decrypt(in_key: &str, in_string: &str) -> () {
+fn decrypt(in_key: &str, in_string: &str, key_start: &mut usize) -> () {
     let key = generate_key(in_key);
+    let key_start_copy = key_start.to_owned();
     if key.1.len() > 5 {
         eprintln!("{:?}",key.1);
     }
@@ -194,7 +198,8 @@ fn decrypt(in_key: &str, in_string: &str) -> () {
 
     let mut out_num_string:Vec<i8> = vec!();
     for i in 0..num_string.len() {
-        out_num_string.push(num_string[i] + key.0[i % 5]);
+        out_num_string.push(num_string[i] + key.0[(i + key_start_copy.to_owned()) % 5]);
+        *key_start = (i + key_start_copy + 1)% 5;
     }
 
     let mut out_string = String::new();
